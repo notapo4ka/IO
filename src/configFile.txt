@@ -1,0 +1,4 @@
+FILE: src/configFile.txt
+LEVEL: INFO
+MAX-SIZE: 2048
+FORMAT: .txt
