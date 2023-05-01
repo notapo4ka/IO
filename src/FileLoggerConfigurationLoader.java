@@ -6,18 +6,18 @@ import java.io.IOException;
 public class FileLoggerConfigurationLoader {
 
     public static FileLoggerConfiguration load(String filePath) {
-        BufferedReader reader = null;
         String pathToFile = null;
         LoggingLevel loggingLevel = null;
         long maxSizeOfFile = 0;
         String format = null;
-        try {
-            reader = new BufferedReader(new FileReader(filePath));
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))){
             String line = reader.readLine();
             while (line != null) {
                 String[] configurationParts = line.split(": ");
                 String value = configurationParts[1];
-                switch (configurationParts[0]) {
+                String key = configurationParts[0];
+                switch (key) {
                     case "FILE":
                         pathToFile = value;
                         break;
@@ -39,18 +39,8 @@ public class FileLoggerConfigurationLoader {
                 }
                 line = reader.readLine();
             }
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
         } catch (IOException e) {
             throw new RuntimeException(e);
-        } finally {
-            if (reader != null) {
-                try {
-                    reader.close();
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            }
         }
         return new FileLoggerConfiguration(pathToFile, loggingLevel, maxSizeOfFile, format);
     }
